@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>온민원 | 대국민 민원서비스 체험</title><link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script></head>
+<body>
+<a class="skip" href="#main">본문 바로가기</a>
+<div class="demo-bar"><span class="wrap">학습용 가상 기관 · 실제 민원 접수 및 결제가 이루어지지 않습니다.</span></div>
+<header><div class="wrap header"><a class="brand" href="/" aria-label="온민원 홈"><span class="brand-icon">온</span><span>온민원<small>모두에게 열린 민원서비스</small></span></a><nav aria-label="주 메뉴"><a href="#apply">민원 신청</a><a href="#history">나의 민원</a><a href="#guide">이용 안내</a></nav><span id="user-name" class="account">체험 계정 미설정</span></div></header>
+<main id="main" class="wrap">
+<section class="hero"><div><p class="eyebrow">CITIZEN SERVICE</p><h1>일상의 불편부터<br><em>필요한 증명까지.</em></h1><p class="hero-copy">민원을 신청하고, 접수 내역을 한곳에서 확인하세요.<br>온민원이 더 편리한 일상을 함께 만듭니다.</p><a class="button primary" href="#apply">민원 신청하기 <span>↗</span></a></div><aside class="hero-card"><div class="card-top"><span class="round-icon">✓</span><span class="pill">온라인 서비스</span></div><h2>방문 없이, 기다림 없이</h2><p>신청부터 접수 확인까지<br>온라인으로 간편하게 이용하세요.</p><div class="steps"><span>01 신청</span><b>→</b><span>02 확인</span><b>→</b><span>03 접수</span></div><small>이 화면은 Kubernetes 실습용 샘플입니다.</small></aside></section>
+<section class="service-grid" aria-label="민원 분야">
+<button class="service-card" data-category="LIVING"><span class="service-icon">⌂</span><strong>생활 불편</strong><span>시설·도로·생활환경 신고</span><b>↗</b></button>
+<button class="service-card" data-category="TRAFFIC"><span class="service-icon">⇄</span><strong>교통·안전</strong><span>교통시설 및 안전 제안</span><b>↗</b></button>
+<button class="service-card" data-category="ENVIRONMENT"><span class="service-icon">♧</span><strong>환경·위생</strong><span>청결하고 쾌적한 우리 동네</span><b>↗</b></button>
+<button class="service-card" data-category="CERTIFICATE"><span class="service-icon">▤</span><strong>증명서 발급 체험</strong><span>수수료 모의 결제 1,000원</span><b>↗</b></button>
+</section>
+<div id="notice" class="notice" role="status" aria-live="polite">먼저 체험 계정을 만들면 민원을 신청할 수 있습니다. 실제 개인정보는 입력하지 마세요.</div>
+<div class="content-grid">
+<section id="apply" class="panel"><div class="section-heading"><div><p class="eyebrow">APPLICATION</p><h2>민원 신청</h2></div><span class="muted">* 필수 입력</span></div>
+<form id="member-form" class="member-box"><label for="member-name">체험 계정 만들기</label><div class="inline"><input id="member-name" maxlength="40" placeholder="체험용 이름 (예: 홍길동)" required><button class="button dark" type="submit">계정 만들기</button></div><small>체험 계정은 이 브라우저에 저장됩니다. 본인 인증 기능은 포함하지 않습니다.</small></form>
+<div id="member-ready" class="member-box" hidden><strong id="member-welcome"></strong><p>현재 계정으로 신청한 민원만 조회됩니다.</p><button type="button" class="text-button" id="switch-user">다른 체험 계정 만들기</button></div>
+<form id="order-form"><label for="category">민원 분야 *</label><select id="category" required><option value="LIVING">생활 불편</option><option value="TRAFFIC">교통·안전</option><option value="ENVIRONMENT">환경·위생</option><option value="CERTIFICATE">증명서 발급 체험</option></select><label for="title">민원 제목 *</label><input id="title" maxlength="100" placeholder="어떤 도움이 필요하신가요?" required><label for="content">민원 내용 *</label><textarea id="content" rows="5" maxlength="2000" placeholder="장소와 내용을 구체적으로 작성해 주세요. 실제 개인정보는 입력하지 마세요." required></textarea><div class="field-bottom"><span>이름·주소·전화번호 등 실제 개인정보 입력 금지</span><span id="char-count">0 / 2,000</span></div><div class="fee-line"><span>예상 수수료</span><strong id="fee">무료</strong></div><label class="check"><input id="consent" type="checkbox" required>실제 민원이 아닌 학습용 체험임을 확인했습니다.</label><button class="button primary full" id="submit-order" type="submit">민원 접수하기 <span>→</span></button></form>
+</section>
+<aside class="side-column"><section id="guide" class="panel guide"><p class="eyebrow">QUICK GUIDE</p><h2>이용 순서</h2><ol><li><b>01</b><div><strong>체험 계정 생성</strong><p>가상의 이름으로 시작하세요.</p></div></li><li><b>02</b><div><strong>민원 작성 및 신청</strong><p>분야와 내용을 입력하세요.</p></div></li><li><b>03</b><div><strong>접수 내역 확인</strong><p>유료 항목은 모의 결제 후 접수됩니다.</p></div></li></ol></section><section class="help-card"><span>알아두세요</span><h3>안전한 실습을 위한 안내</h3><p>실제 기관과 연결되지 않는 가상 서비스입니다. 카드번호나 주민등록번호를 요청하지 않습니다.</p><p>모의 결제는 실제 금액이 청구되지 않으며 증명서도 발급되지 않습니다.</p></section></aside>
+</div>
+<section id="history" class="panel history"><div class="section-heading"><div><p class="eyebrow">MY APPLICATIONS</p><h2>나의 민원 <span id="total" class="count">0</span></h2></div><button class="button outline" type="button" id="refresh">새로고침 ↻</button></div><div class="filters"><label for="status-filter" class="sr-only">상태 필터</label><select id="status-filter"><option value="ALL">전체 상태</option><option value="RECEIVED">접수 완료</option><option value="PAYMENT_PENDING">결제 대기</option></select><label for="search" class="sr-only">민원 제목 검색</label><input id="search" placeholder="민원 제목 검색"></div><div id="list" aria-live="polite"><div class="empty">접수된 민원이 없습니다.<small>체험 계정을 만들고 첫 민원을 신청해 보세요.</small></div></div><p class="muted list-note">최근 신청 100건을 표시합니다.</p></section>
+</main>
+<footer><div class="wrap footer"><div class="brand">온민원 <small>시민과 더 가까이</small></div><p>가상 대국민 민원사이트 · Java Spring Boot / Kubernetes 실습<br>© Citizen Portal Lab. 실제 행정기관의 서비스가 아닙니다.</p></div></footer>
+<dialog id="detail"><div class="dialog-head"><h2>민원 접수 상세</h2><button type="button" id="close-detail" aria-label="상세 닫기">×</button></div><div id="detail-body"></div></dialog>
+</body></html>

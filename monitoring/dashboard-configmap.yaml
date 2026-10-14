@@ -1,0 +1,109 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: citizen-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: '1'
+data:
+  citizen-dashboard.json: '{"title": "Citizen Lab / 3 Nodes", "uid": "citizen-three-nodes",
+    "schemaVersion": 39, "version": 1, "refresh": "30s", "time": {"from": "now-30m",
+    "to": "now"}, "templating": {"list": [{"name": "DS_PROMETHEUS", "label": "Prometheus",
+    "type": "datasource", "query": "prometheus", "refresh": 1}]}, "panels": [{"id":
+    1, "title": "Ready 노드 수", "type": "stat", "datasource": {"type": "prometheus",
+    "uid": "${DS_PROMETHEUS}"}, "gridPos": {"h": 5, "w": 6, "x": 0, "y": 0}, "targets":
+    [{"refId": "A", "expr": "sum(kube_node_status_condition{condition=\"Ready\",status=\"true\"})",
+    "legendFormat": "{{pod}} {{application}} {{instance}} {{code}}", "range": true}],
+    "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []}, "options": {"reduceOptions":
+    {"calcs": ["lastNotNull"], "fields": "", "values": false}}}, {"id": 2, "title":
+    "Ready 업무 Pod 수", "type": "stat", "datasource": {"type": "prometheus", "uid":
+    "${DS_PROMETHEUS}"}, "gridPos": {"h": 5, "w": 6, "x": 6, "y": 0}, "targets": [{"refId":
+    "A", "expr": "sum(kube_pod_status_ready{namespace=\"shop\",condition=\"true\"})",
+    "legendFormat": "{{pod}} {{application}} {{instance}} {{code}}", "range": true}],
+    "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []}, "options": {"reduceOptions":
+    {"calcs": ["lastNotNull"], "fields": "", "values": false}}}, {"id": 3, "title":
+    "PostgreSQL Ready", "type": "stat", "datasource": {"type": "prometheus", "uid":
+    "${DS_PROMETHEUS}"}, "gridPos": {"h": 5, "w": 6, "x": 12, "y": 0}, "targets":
+    [{"refId": "A", "expr": "kube_statefulset_status_replicas_ready{namespace=\"shop\",statefulset=\"postgres\"}",
+    "legendFormat": "{{pod}} {{application}} {{instance}} {{code}}", "range": true}],
+    "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []}, "options": {"reduceOptions":
+    {"calcs": ["lastNotNull"], "fields": "", "values": false}}}, {"id": 4, "title":
+    "Ingress 수집 대상 UP", "type": "stat", "datasource": {"type": "prometheus", "uid":
+    "${DS_PROMETHEUS}"}, "gridPos": {"h": 5, "w": 6, "x": 18, "y": 0}, "targets":
+    [{"refId": "A", "expr": "sum(up{job=\"traefik-pods\"})", "legendFormat": "{{pod}}
+    {{application}} {{instance}} {{code}}", "range": true}], "fieldConfig": {"defaults":
+    {"unit": "short"}, "overrides": []}, "options": {"reduceOptions": {"calcs": ["lastNotNull"],
+    "fields": "", "values": false}}}, {"id": 5, "title": "노드 CPU 사용률", "type": "timeseries",
+    "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "gridPos": {"h":
+    7, "w": 12, "x": 0, "y": 5}, "targets": [{"refId": "A", "expr": "100 * (1 - avg
+    by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])))", "legendFormat":
+    "{{pod}} {{application}} {{instance}} {{code}}", "range": true}], "fieldConfig":
+    {"defaults": {"unit": "percent"}, "overrides": []}, "options": {"legend": {"displayMode":
+    "list", "placement": "bottom"}}}, {"id": 6, "title": "노드 메모리 사용률", "type": "timeseries",
+    "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "gridPos": {"h":
+    7, "w": 12, "x": 12, "y": 5}, "targets": [{"refId": "A", "expr": "100 * (1 - node_memory_MemAvailable_bytes
+    / node_memory_MemTotal_bytes)", "legendFormat": "{{pod}} {{application}} {{instance}}
+    {{code}}", "range": true}], "fieldConfig": {"defaults": {"unit": "percent"}, "overrides":
+    []}, "options": {"legend": {"displayMode": "list", "placement": "bottom"}}}, {"id":
+    7, "title": "노드 디스크 사용률", "type": "timeseries", "datasource": {"type": "prometheus",
+    "uid": "${DS_PROMETHEUS}"}, "gridPos": {"h": 7, "w": 12, "x": 0, "y": 12}, "targets":
+    [{"refId": "A", "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|overlay|squashfs\",mountpoint=\"/\"}
+    / node_filesystem_size_bytes{fstype!~\"tmpfs|overlay|squashfs\",mountpoint=\"/\"})",
+    "legendFormat": "{{pod}} {{application}} {{instance}} {{code}}", "range": true}],
+    "fieldConfig": {"defaults": {"unit": "percent"}, "overrides": []}, "options":
+    {"legend": {"displayMode": "list", "placement": "bottom"}}}, {"id": 8, "title":
+    "업무 Pod CPU 코어", "type": "timeseries", "datasource": {"type": "prometheus", "uid":
+    "${DS_PROMETHEUS}"}, "gridPos": {"h": 7, "w": 12, "x": 12, "y": 12}, "targets":
+    [{"refId": "A", "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"shop\",container!=\"\",container!=\"POD\"}[5m]))",
+    "legendFormat": "{{pod}} {{application}} {{instance}} {{code}}", "range": true}],
+    "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []}, "options": {"legend":
+    {"displayMode": "list", "placement": "bottom"}}}, {"id": 9, "title": "업무 Pod 메모리",
+    "type": "timeseries", "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+    "gridPos": {"h": 7, "w": 12, "x": 0, "y": 19}, "targets": [{"refId": "A", "expr":
+    "sum by (pod) (container_memory_working_set_bytes{namespace=\"shop\",container!=\"\",container!=\"POD\"})",
+    "legendFormat": "{{pod}} {{application}} {{instance}} {{code}}", "range": true}],
+    "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []}, "options": {"legend":
+    {"displayMode": "list", "placement": "bottom"}}}, {"id": 10, "title": "10분 재시작
+    증가", "type": "timeseries", "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+    "gridPos": {"h": 7, "w": 12, "x": 12, "y": 19}, "targets": [{"refId": "A", "expr":
+    "sum by (pod) (increase(kube_pod_container_status_restarts_total{namespace=\"shop\"}[10m]))",
+    "legendFormat": "{{pod}} {{application}} {{instance}} {{code}}", "range": true}],
+    "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []}, "options": {"legend":
+    {"displayMode": "list", "placement": "bottom"}}}, {"id": 11, "title": "API 초당
+    요청", "type": "timeseries", "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+    "gridPos": {"h": 7, "w": 12, "x": 0, "y": 26}, "targets": [{"refId": "A", "expr":
+    "sum by (application) (rate(http_server_requests_seconds_count{job=\"shop-apis\",uri!~\"/actuator.*\"}[5m]))",
+    "legendFormat": "{{pod}} {{application}} {{instance}} {{code}}", "range": true}],
+    "fieldConfig": {"defaults": {"unit": "reqps"}, "overrides": []}, "options": {"legend":
+    {"displayMode": "list", "placement": "bottom"}}}, {"id": 12, "title": "API p95
+    응답시간", "type": "timeseries", "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+    "gridPos": {"h": 7, "w": 12, "x": 12, "y": 26}, "targets": [{"refId": "A", "expr":
+    "histogram_quantile(0.95,sum by (le,application) (rate(http_server_requests_seconds_bucket{job=\"shop-apis\",uri!~\"/actuator.*\"}[5m])))",
+    "legendFormat": "{{pod}} {{application}} {{instance}} {{code}}", "range": true}],
+    "fieldConfig": {"defaults": {"unit": "s"}, "overrides": []}, "options": {"legend":
+    {"displayMode": "list", "placement": "bottom"}}}, {"id": 13, "title": "API 5xx
+    비율", "type": "timeseries", "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+    "gridPos": {"h": 7, "w": 12, "x": 0, "y": 33}, "targets": [{"refId": "A", "expr":
+    "100 * ((sum(rate(http_server_requests_seconds_count{job=\"shop-apis\",uri!~\"/actuator.*\",status=~\"5..\"}[5m]))
+    or vector(0)) / clamp_min(sum(rate(http_server_requests_seconds_count{job=\"shop-apis\",uri!~\"/actuator.*\"}[5m])),0.001))",
+    "legendFormat": "{{pod}} {{application}} {{instance}} {{code}}", "range": true}],
+    "fieldConfig": {"defaults": {"unit": "percent"}, "overrides": []}, "options":
+    {"legend": {"displayMode": "list", "placement": "bottom"}}}, {"id": 14, "title":
+    "Ingress 5xx 요청", "type": "timeseries", "datasource": {"type": "prometheus", "uid":
+    "${DS_PROMETHEUS}"}, "gridPos": {"h": 7, "w": 12, "x": 12, "y": 33}, "targets":
+    [{"refId": "A", "expr": "sum by (code) (rate(traefik_entrypoint_requests_total{job=\"traefik-pods\",code=~\"5..\"}[5m]))",
+    "legendFormat": "{{pod}} {{application}} {{instance}} {{code}}", "range": true}],
+    "fieldConfig": {"defaults": {"unit": "reqps"}, "overrides": []}, "options": {"legend":
+    {"displayMode": "list", "placement": "bottom"}}}, {"id": 15, "title": "JVM 힙 사용량",
+    "type": "timeseries", "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+    "gridPos": {"h": 7, "w": 12, "x": 0, "y": 40}, "targets": [{"refId": "A", "expr":
+    "sum by (application,pod) (jvm_memory_used_bytes{job=\"shop-apis\",area=\"heap\"})",
+    "legendFormat": "{{pod}} {{application}} {{instance}} {{code}}", "range": true}],
+    "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []}, "options": {"legend":
+    {"displayMode": "list", "placement": "bottom"}}}, {"id": 16, "title": "DB 풀 대기
+    스레드", "type": "timeseries", "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+    "gridPos": {"h": 7, "w": 12, "x": 12, "y": 40}, "targets": [{"refId": "A", "expr":
+    "hikaricp_connections_pending{job=\"shop-apis\"}", "legendFormat": "{{pod}} {{application}}
+    {{instance}} {{code}}", "range": true}], "fieldConfig": {"defaults": {"unit":
+    "short"}, "overrides": []}, "options": {"legend": {"displayMode": "list", "placement":
+    "bottom"}}}]}'

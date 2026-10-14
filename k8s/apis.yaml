@@ -1,0 +1,288 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: member-api
+    namespace: shop
+  spec:
+    selector:
+      app: member-api
+    ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: member-api
+    namespace: shop
+  spec:
+    replicas: 2
+    revisionHistoryLimit: 3
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+    selector:
+      matchLabels:
+        app: member-api
+    template:
+      metadata:
+        labels:
+          app: member-api
+          tier: api
+      spec:
+        automountServiceAccountToken: false
+        imagePullSecrets:
+        - name: ghcr-pull
+        containers:
+        - name: api
+          image: IMAGE_PLACEHOLDER
+          ports:
+          - containerPort: 8080
+            name: http
+          env:
+          - name: SERVICE_NAME
+            value: member
+          - name: DB_HOST
+            value: postgres
+          - name: DB_NAME
+            value: shop
+          - name: DB_USER
+            value: shop
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: password
+          resources:
+            requests:
+              cpu: 250m
+              memory: 384Mi
+            limits:
+              cpu: '1'
+              memory: 768Mi
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            periodSeconds: 10
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+        nodeSelector:
+          lab-role: worker
+        topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: member-api
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: payment-api
+    namespace: shop
+  spec:
+    selector:
+      app: payment-api
+    ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: payment-api
+    namespace: shop
+  spec:
+    replicas: 2
+    revisionHistoryLimit: 3
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+    selector:
+      matchLabels:
+        app: payment-api
+    template:
+      metadata:
+        labels:
+          app: payment-api
+          tier: api
+      spec:
+        automountServiceAccountToken: false
+        imagePullSecrets:
+        - name: ghcr-pull
+        containers:
+        - name: api
+          image: IMAGE_PLACEHOLDER
+          ports:
+          - containerPort: 8080
+            name: http
+          env:
+          - name: SERVICE_NAME
+            value: payment
+          - name: DB_HOST
+            value: postgres
+          - name: DB_NAME
+            value: shop
+          - name: DB_USER
+            value: shop
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: password
+          resources:
+            requests:
+              cpu: 250m
+              memory: 384Mi
+            limits:
+              cpu: '1'
+              memory: 768Mi
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            periodSeconds: 10
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+        nodeSelector:
+          lab-role: worker
+        topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: payment-api
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: order-api
+    namespace: shop
+  spec:
+    selector:
+      app: order-api
+    ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: order-api
+    namespace: shop
+  spec:
+    replicas: 2
+    revisionHistoryLimit: 3
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+    selector:
+      matchLabels:
+        app: order-api
+    template:
+      metadata:
+        labels:
+          app: order-api
+          tier: api
+      spec:
+        automountServiceAccountToken: false
+        imagePullSecrets:
+        - name: ghcr-pull
+        containers:
+        - name: api
+          image: IMAGE_PLACEHOLDER
+          ports:
+          - containerPort: 8080
+            name: http
+          env:
+          - name: SERVICE_NAME
+            value: order
+          - name: DB_HOST
+            value: postgres
+          - name: DB_NAME
+            value: shop
+          - name: DB_USER
+            value: shop
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: password
+          resources:
+            requests:
+              cpu: 250m
+              memory: 384Mi
+            limits:
+              cpu: '1'
+              memory: 768Mi
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            periodSeconds: 10
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+        nodeSelector:
+          lab-role: worker
+        topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: order-api

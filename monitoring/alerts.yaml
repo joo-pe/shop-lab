@@ -1,0 +1,48 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: citizen-lab-rules
+  namespace: monitoring
+  labels:
+    release: monitor
+spec:
+  groups:
+  - name: citizen-lab
+    rules:
+    - alert: LabNodeNotReady
+      expr: kube_node_status_condition{condition="Ready",status="true"} == 0
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: Node {{ $labels.node }} is not Ready
+    - alert: LabApiReplicaShortage
+      expr: kube_deployment_status_replicas_available{namespace="shop",deployment=~".*-api"}
+        < 2
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: API {{ $labels.deployment }} has fewer than two available replicas
+    - alert: LabDatabaseNotReady
+      expr: kube_statefulset_status_replicas_ready{namespace="shop",statefulset="postgres"}
+        < 1
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: PostgreSQL has no ready replica
+    - alert: LabApiScrapeDown
+      expr: up{job="shop-apis"} == 0
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: Cannot scrape API {{ $labels.pod }}
+    - alert: LabIngressScrapeDown
+      expr: up{job="traefik-pods"} == 0
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: Cannot scrape Traefik {{ $labels.pod }}

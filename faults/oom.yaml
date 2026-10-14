@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: oom-demo
+  namespace: lab-faults
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    lab-role: worker
+  containers:
+  - name: memory
+    image: eclipse-temurin:17-jdk-jammy
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 128Mi
+    command:
+    - sh
+    - -c
+    args:
+    - "cat > /tmp/MemoryHog.java <<'JAVA'\nclass MemoryHog { public static void main(String[]\
+      \ a) throws Exception {\n byte[] data = new byte[220 * 1024 * 1024];\n for (int\
+      \ i=0;i<data.length;i+=4096) data[i]=1;\n Thread.sleep(60000);\n System.out.println(data.length);\n\
+      }}\nJAVA\njavac /tmp/MemoryHog.java && java -Xms32m -Xmx512m -cp /tmp MemoryHog"

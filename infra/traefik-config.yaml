@@ -1,0 +1,13 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: "deployment:\n  replicas: 2\nnodeSelector:\n  lab-role: worker\n\
+    affinity:\n  podAntiAffinity:\n    preferredDuringSchedulingIgnoredDuringExecution:\n\
+    \    - weight: 100\n      podAffinityTerm:\n        labelSelector:\n         \
+    \ matchLabels:\n            app.kubernetes.io/name: traefik\n        topologyKey:\
+    \ kubernetes.io/hostname\nmetrics:\n  prometheus:\n    entryPoint: metrics\n \
+    \   addEntryPointsLabels: true\n    addServicesLabels: true\nadditionalArguments:\n\
+    - --accesslog=true\n- --accesslog.format=json\n- --accesslog.fields.headers.defaultmode=drop\n"

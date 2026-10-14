@@ -1,0 +1,4 @@
+FROM nginx:stable-alpine
+COPY web/nginx-static.conf /etc/nginx/nginx.conf
+COPY web/index.html web/styles.css web/app.js /usr/share/nginx/html/
+EXPOSE 8080

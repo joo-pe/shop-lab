@@ -1,0 +1,103 @@
+grafana:
+  service:
+    type: ClusterIP
+  persistence:
+    enabled: true
+    storageClassName: local-path
+    size: 2Gi
+  nodeSelector:
+    kubernetes.io/hostname: k3s-cp
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: '1'
+      searchNamespace: monitoring
+prometheus:
+  prometheusSpec:
+    retention: 2d
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        memory: 2Gi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+    additionalScrapeConfigs:
+    - job_name: shop-apis
+      metrics_path: /actuator/prometheus
+      kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names:
+          - shop
+      relabel_configs:
+      - source_labels:
+        - __meta_kubernetes_pod_label_tier
+        regex: api
+        action: keep
+      - source_labels:
+        - __meta_kubernetes_pod_container_port_name
+        regex: http
+        action: keep
+      - source_labels:
+        - __meta_kubernetes_pod_name
+        target_label: pod
+      - source_labels:
+        - __meta_kubernetes_namespace
+        target_label: namespace
+      - source_labels:
+        - __meta_kubernetes_pod_node_name
+        target_label: node
+      - source_labels:
+        - __meta_kubernetes_pod_label_app
+        target_label: app
+    - job_name: traefik-pods
+      metrics_path: /metrics
+      kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names:
+          - kube-system
+      relabel_configs:
+      - source_labels:
+        - __meta_kubernetes_pod_label_app_kubernetes_io_name
+        regex: traefik
+        action: keep
+      - source_labels:
+        - __meta_kubernetes_pod_container_port_name
+        regex: metrics
+        action: keep
+      - source_labels:
+        - __meta_kubernetes_pod_name
+        target_label: pod
+    nodeSelector:
+      kubernetes.io/hostname: k3s-cp
+    scrapeInterval: 30s
+    evaluationInterval: 30s
+kubeEtcd:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+alertmanager:
+  alertmanagerSpec:
+    nodeSelector:
+      kubernetes.io/hostname: k3s-cp
+prometheusOperator:
+  nodeSelector:
+    kubernetes.io/hostname: k3s-cp
+kube-state-metrics:
+  nodeSelector:
+    kubernetes.io/hostname: k3s-cp

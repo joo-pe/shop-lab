@@ -1,0 +1,46 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minwon-tls
+  namespace: shop
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: 'true'
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: minwon.lab
+    http:
+      paths:
+      - path: /api/members
+        pathType: Prefix
+        backend:
+          service:
+            name: member-api
+            port:
+              number: 8080
+      - path: /api/orders
+        pathType: Prefix
+        backend:
+          service:
+            name: order-api
+            port:
+              number: 8080
+      - path: /api/payments
+        pathType: Prefix
+        backend:
+          service:
+            name: payment-api
+            port:
+              number: 8080
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: gateway
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - minwon.lab
+    secretName: minwon-tls

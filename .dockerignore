@@ -1,0 +1,11 @@
+.git
+.github
+target
+node_modules
+test-results
+playwright-report
+*.zip
+*.dump
+.env
+.local-tls
+.lab-backup

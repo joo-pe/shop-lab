@@ -1,0 +1,11 @@
+target/
+.env
+*.dump
+*kubeconfig*
+node_modules/
+test-results/
+playwright-report/
+.idea/
+*.iml
+.local-tls/
+.lab-backup/
