@@ -161,8 +161,8 @@ kubectl -n shop create secret docker-registry ghcr-pull \
  --docker-server=ghcr.io --docker-username="$LAB_GH_USER" \
  --docker-password="$LAB_GH_TOKEN"
 unset LAB_GH_TOKEN
-export IMAGE='ghcr.io/YOUR_LOWERCASE_OWNER/citizen-portal-lab:FULL_COMMIT_SHA'
-export WEB_IMAGE='ghcr.io/YOUR_LOWERCASE_OWNER/citizen-portal-lab-web:FULL_COMMIT_SHA'
+export IMAGE='ghcr.io/joo-pe/citizen-portal-lab:FULL_COMMIT_SHA'
+export WEB_IMAGE='ghcr.io/joo-pe/citizen-portal-lab-web:FULL_COMMIT_SHA'
 bash scripts/bootstrap.sh
 ```
 
